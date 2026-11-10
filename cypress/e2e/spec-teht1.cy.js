@@ -1,27 +1,24 @@
 /// <reference types="Cypress" />
 
-describe('Wikipediatesti', () => {
-  it('clicking "type" shows the right headings', () => {
-    cy.visit('https://wikipedia.org');
+describe('Wikipedia Jamk -testi', () => {
+  it('hakee Jamkin, rullaa kampuksiin, odottaa ja vaihtaa kieleksi englannin', () => {
+    cy.visit('https://fi.wikipedia.org');
 
-    // wait - odotetaan annetun millisekuntien ajan.
+    cy.get('input[name="search"]')
+      .first()
+      .should('be.visible')
+      .type('Jamk{enter}');
+
+    cy.url().should('include', 'Jyv%C3%A4skyl%C3%A4n_ammattikorkeakoulu');
+
+    cy.contains('h2, h3', 'Kampukset').scrollIntoView().should('be.visible');
+
     cy.wait(5000);
 
-    // containst - etsii DOM-elementin joka sisältää annetun arvon
-    // click - klikataan DOM-elementtiä
-    cy.contains('type').click();
+    cy.get('a[hreflang="en"]').first().click();
 
-    // url - haetaan tämänhetkinen URL
-    // should - jokin tulisi olla jotain, määritellään argumenteillä
-    // include - sisältää jonkin annetun arvon
-    cy.url().should('include', '/commands/actions');
-
-    // get - haetaan DOM-elementti
-    // type - kirjoitetaan DOM-elementtiin
-    // have.value - tarkistetaan, että valitussa elementissä on annettu arvo
-    // piste-operaattorilla voidaan ketjuttaa komentoja
-    cy.get('.action-email')
-      .type('fake@email.com')
-      .should('have.value', 'fake@email.com');
+    cy.origin('https://en.wikipedia.org', () => {
+      cy.url().should('include', '/wiki/JAMK_University_of_Applied_Sciences');
+    });
   });
 });
